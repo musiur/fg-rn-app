@@ -1,14 +1,16 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 interface AvatarProps {
   name: string;
+  image?: string;
   color?: string;
   size?: number;
 }
 
 export const Avatar: React.FC<AvatarProps> = ({
   name,
+  image,
   color = "#475569",
   size = 32,
 }) => {
@@ -22,6 +24,20 @@ export const Avatar: React.FC<AvatarProps> = ({
       .join("")
       .toUpperCase();
   };
+
+  if (image) {
+    return (
+      <Image
+        source={{ uri: image }}
+        style={{
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: color,
+        }}
+      />
+    );
+  }
 
   return (
     <View

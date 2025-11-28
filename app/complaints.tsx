@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Select } from "../components/Select";
 import { StatusPill } from "../components/StatusPill";
 import { Colors } from "../constants/Colors";
 import { EMPLOYEES } from "../constants/Data";
@@ -115,55 +116,38 @@ export default function ComplaintsScreen() {
 
         <View style={styles.rowGroup}>
           <View style={styles.halfGroup}>
-            <Text style={styles.inputLabel}>Category</Text>
-            <TouchableOpacity
-              style={styles.picker}
-              onPress={() => {
-                const categories = [
-                  "General",
-                  "Facility",
-                  "Payroll",
-                  "Safety",
-                  "Management",
-                  "Discrimination",
-                  "Equipment",
-                ];
-                Alert.alert(
-                  "Select Category",
-                  "",
-                  categories.map((c) => ({
-                    text: c,
-                    onPress: () => setFormData({ ...formData, category: c }),
-                  }))
-                );
-              }}
-            >
-              <Text style={styles.pickerText}>{formData.category}</Text>
-            </TouchableOpacity>
+            <Select
+              label="Category"
+              options={[
+                { label: "General", value: "General" },
+                { label: "Facility", value: "Facility" },
+                { label: "Payroll", value: "Payroll" },
+                { label: "Safety", value: "Safety" },
+                { label: "Management", value: "Management" },
+                { label: "Discrimination", value: "Discrimination" },
+                { label: "Equipment", value: "Equipment" },
+              ]}
+              value={formData.category}
+              onValueChange={(val) => setFormData({ ...formData, category: val })}
+            />
           </View>
 
           <View style={styles.halfGroup}>
-            <Text style={styles.inputLabel}>Priority</Text>
-            <TouchableOpacity
-              style={styles.picker}
-              onPress={() => {
-                const priorities = ["Low", "Medium", "High"];
-                Alert.alert(
-                  "Select Priority",
-                  "",
-                  priorities.map((p) => ({
-                    text: p,
-                    onPress: () =>
-                      setFormData({
-                        ...formData,
-                        priority: p as "Low" | "Medium" | "High",
-                      }),
-                  }))
-                );
-              }}
-            >
-              <Text style={styles.pickerText}>{formData.priority}</Text>
-            </TouchableOpacity>
+            <Select
+              label="Priority"
+              options={[
+                { label: "Low", value: "Low" },
+                { label: "Medium", value: "Medium" },
+                { label: "High", value: "High" },
+              ]}
+              value={formData.priority}
+              onValueChange={(val) =>
+                setFormData({
+                  ...formData,
+                  priority: val as "Low" | "Medium" | "High",
+                })
+              }
+            />
           </View>
         </View>
 
@@ -198,33 +182,42 @@ export default function ComplaintsScreen() {
         {complaints.map((complaint) => {
           const priority = getPriorityColor(complaint.priority);
           return (
-            <View key={complaint.id} style={styles.complaintItem}>
+            <View
+              key={complaint.id}
+              style={[
+                styles.complaintItem,
+                { borderLeftColor: priority.border }
+              ]}
+            >
               <View style={styles.complaintHeader}>
                 <View style={styles.complaintHeaderLeft}>
-                  <Text style={styles.complaintSubject}>
-                    {complaint.subject}
-                  </Text>
+                  <View style={styles.titleRow}>
+                    <Text style={styles.complaintSubject}>
+                      {complaint.subject}
+                    </Text>
+                    <View
+                      style={[
+                        styles.priorityBadge,
+                        {
+                          backgroundColor: priority.bg,
+                          borderColor: priority.border,
+                        },
+                      ]}
+                    >
+                      <View style={[styles.priorityDot, { backgroundColor: priority.border }]} />
+                      <Text
+                        style={[styles.priorityText, { color: priority.text }]}
+                      >
+                        {complaint.priority}
+                      </Text>
+                    </View>
+                  </View>
                   <Text style={styles.complaintMeta}>
                     {complaint.id} • {complaint.category} • {complaint.date}
                   </Text>
                 </View>
                 <View style={styles.complaintHeaderRight}>
                   <StatusPill status={complaint.status} />
-                  <View
-                    style={[
-                      styles.priorityBadge,
-                      {
-                        backgroundColor: priority.bg,
-                        borderColor: priority.border,
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={[styles.priorityText, { color: priority.text }]}
-                    >
-                      {complaint.priority}
-                    </Text>
-                  </View>
                 </View>
               </View>
               {complaint.description && (
@@ -310,17 +303,6 @@ const styles = StyleSheet.create({
   halfGroup: {
     flex: 1,
   },
-  picker: {
-    backgroundColor: Colors.neutral[900],
-    borderWidth: 1,
-    borderColor: Colors.neutral[700],
-    borderRadius: 14,
-    padding: 14,
-  },
-  pickerText: {
-    color: Colors.slate[200],
-    fontSize: 14,
-  },
   submitButton: {
     backgroundColor: Colors.brand.light,
     padding: 16,
@@ -347,45 +329,59 @@ const styles = StyleSheet.create({
   },
   complaintItem: {
     padding: 16,
-    borderRadius: 14,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: Colors.neutral[800],
+    borderLeftWidth: 4,
     backgroundColor: Colors.neutral[800] + "33",
     marginBottom: 12,
   },
   complaintHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
     marginBottom: 12,
   },
   complaintHeaderLeft: {
     flex: 1,
-    paddingRight: 12,
+  },
+  titleRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+    gap: 12,
   },
   complaintSubject: {
+    flex: 1,
     color: Colors.slate[100],
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "600",
-    marginBottom: 6,
   },
   complaintMeta: {
     color: Colors.slate[400],
     fontSize: 11,
+    marginBottom: 4,
   },
   complaintHeaderRight: {
     alignItems: "flex-end",
     gap: 6,
   },
   priorityBadge: {
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    borderWidth: 1,
+    paddingVertical: 5,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    gap: 5,
+  },
+  priorityDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   priorityText: {
     fontSize: 11,
-    fontWeight: "600",
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
   complaintDescription: {
     padding: 12,

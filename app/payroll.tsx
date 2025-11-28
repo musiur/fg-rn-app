@@ -1,17 +1,29 @@
 import { Download } from "lucide-react-native";
-import React from "react";
+import React, { useState } from "react";
 import {
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
 import { Colors } from "../constants/Colors";
+import { downloadFile, generatePayslip } from "../utils/downloadHelper";
 
-export default function LeaveScreen() {
+export default function PayrollScreen() {
+  const [downloading, setDownloading] = useState<string | null>(null);
+
+  const handleDownload = async (month: string) => {
+    setDownloading(month);
+    const filename = `Payslip_${month.replace(" ", "_")}.txt`;
+    const content = generatePayslip(month, "৳ 47,800");
+    await downloadFile(filename, content, "text/plain");
+    setDownloading(null);
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -62,9 +74,19 @@ export default function LeaveScreen() {
                   <Text style={styles.payslipMonth}>{month}</Text>
                   <Text style={styles.payslipAmount}>Net: ৳ 47,800</Text>
                 </View>
-                <TouchableOpacity style={styles.downloadButton}>
-                  <Download size={16} color={Colors.brand.light} />
-                  <Text style={styles.downloadText}>Download</Text>
+                <TouchableOpacity
+                  style={styles.downloadButton}
+                  onPress={() => handleDownload(month)}
+                  disabled={downloading === month}
+                >
+                  {downloading === month ? (
+                    <ActivityIndicator size="small" color={Colors.brand.light} />
+                  ) : (
+                    <>
+                      <Download size={16} color={Colors.brand.light} />
+                      <Text style={styles.downloadText}>Download</Text>
+                    </>
+                  )}
                 </TouchableOpacity>
               </View>
             )

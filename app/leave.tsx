@@ -7,10 +7,11 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
+import { DatePicker } from "../components/DatePicker";
+import { Select } from "../components/Select";
 import { StatusPill } from "../components/StatusPill";
 import { Colors } from "../constants/Colors";
 import { EMPLOYEES } from "../constants/Data";
@@ -19,7 +20,29 @@ import { Employee, LeaveRequest } from "../types";
 export default function LeaveScreen() {
   const [tab, setTab] = useState<"leave" | "payroll">("leave");
   const [employee, setEmployee] = useState<Employee>(EMPLOYEES[0]);
-  const [requests, setRequests] = useState<LeaveRequest[]>([]);
+  const [requests, setRequests] = useState<LeaveRequest[]>([
+    {
+      id: "LV-301",
+      type: "Annual",
+      from: "2025-08-15",
+      to: "2025-08-19",
+      status: "approved",
+    },
+    {
+      id: "LV-298",
+      type: "Sick",
+      from: "2025-08-05",
+      to: "2025-08-06",
+      status: "pending",
+    },
+    {
+      id: "LV-285",
+      type: "Casual",
+      from: "2025-07-28",
+      to: "2025-07-28",
+      status: "rejected",
+    },
+  ]);
   const [formData, setFormData] = useState({
     type: "",
     from: "",
@@ -93,59 +116,36 @@ export default function LeaveScreen() {
         <View style={styles.formCard}>
           <Text style={styles.cardTitle}>Apply for Leave</Text>
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Leave Type</Text>
-            <View style={styles.pickerContainer}>
-              <TouchableOpacity
-                style={styles.picker}
-                onPress={() => {
-                  const types = [
-                    "Annual",
-                    "Sick",
-                    "Casual",
-                    "Maternity",
-                    "Emergency",
-                  ];
-                  Alert.alert(
-                    "Select Leave Type",
-                    "",
-                    types.map((t) => ({
-                      text: t,
-                      onPress: () => setFormData({ ...formData, type: t }),
-                    }))
-                  );
-                }}
-              >
-                <Text
-                  style={
-                    formData.type ? styles.pickerText : styles.pickerPlaceholder
-                  }
-                >
-                  {formData.type || "Select leave type"}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <Select
+            label="Leave Type"
+            options={[
+              { label: "Annual", value: "Annual" },
+              { label: "Sick", value: "Sick" },
+              { label: "Casual", value: "Casual" },
+              { label: "Maternity", value: "Maternity" },
+              { label: "Emergency", value: "Emergency" },
+            ]}
+            value={formData.type}
+            onValueChange={(val) => setFormData({ ...formData, type: val })}
+            placeholder="Select leave type"
+          />
 
           <View style={styles.dateGrid}>
             <View style={styles.dateGroup}>
-              <Text style={styles.inputLabel}>From Date</Text>
-              <TextInput
-                style={styles.input}
+              <DatePicker
+                label="From Date"
                 value={formData.from}
-                onChangeText={(val) => setFormData({ ...formData, from: val })}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor={Colors.slate[500]}
+                onValueChange={(val) => setFormData({ ...formData, from: val })}
+                placeholder="Select start date"
               />
             </View>
             <View style={styles.dateGroup}>
-              <Text style={styles.inputLabel}>To Date</Text>
-              <TextInput
-                style={styles.input}
+              <DatePicker
+                label="To Date"
                 value={formData.to}
-                onChangeText={(val) => setFormData({ ...formData, to: val })}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor={Colors.slate[500]}
+                onValueChange={(val) => setFormData({ ...formData, to: val })}
+                placeholder="Select end date"
+                minDate={formData.from ? new Date(formData.from) : undefined}
               />
             </View>
           </View>
@@ -250,25 +250,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginBottom: 8,
   },
-  pickerContainer: {
-    borderRadius: 14,
-    overflow: "hidden",
-  },
-  picker: {
-    backgroundColor: Colors.neutral[900],
-    borderWidth: 1,
-    borderColor: Colors.neutral[700],
-    borderRadius: 14,
-    padding: 14,
-  },
-  pickerText: {
-    color: Colors.slate[200],
-    fontSize: 14,
-  },
-  pickerPlaceholder: {
-    color: Colors.slate[500],
-    fontSize: 14,
-  },
   dateGrid: {
     flexDirection: "row",
     gap: 12,
@@ -314,9 +295,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.neutral[800],
+    padding: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: Colors.neutral[800],
+    backgroundColor: Colors.neutral[800] + "33",
+    marginBottom: 10,
   },
   historyItemLeft: {
     flex: 1,
@@ -324,7 +308,7 @@ const styles = StyleSheet.create({
   historyId: {
     color: Colors.slate[100],
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
     marginBottom: 4,
   },
   historyDates: {

@@ -1,18 +1,43 @@
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import {
-  Book,
-  Clock,
-  FileText,
-  Home,
-  MessageSquare,
-  User,
+    Bell,
+    Book,
+    Clock,
+    FileText,
+    Home,
+    MessageSquare,
+    User
 } from "lucide-react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "../../constants/Colors";
+import { NOTIFICATIONS } from "../../constants/Data";
+
+function NotificationButton() {
+  const router = useRouter();
+  const unreadCount = NOTIFICATIONS.filter((n) => !n.read).length;
+
+  return (
+    <TouchableOpacity
+      style={styles.notificationButton}
+      onPress={() => router.push("/notifications")}
+    >
+      <Bell size={22} color={Colors.slate[200]} />
+      {unreadCount > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </Text>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
+}
 
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
+        headerRight: () => <NotificationButton />,
         tabBarStyle: {
           backgroundColor: Colors.neutral[950],
           borderTopColor: Colors.neutral[800],
@@ -89,3 +114,30 @@ export default function TabsLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  notificationButton: {
+    position: "relative",
+    marginRight: 16,
+    padding: 8,
+    borderRadius: 12,
+    backgroundColor: Colors.neutral[800],
+  },
+  badge: {
+    position: "absolute",
+    top: 2,
+    right: 2,
+    backgroundColor: Colors.status.error,
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 4,
+  },
+  badgeText: {
+    color: "#fff",
+    fontSize: 9,
+    fontWeight: "700",
+  },
+});

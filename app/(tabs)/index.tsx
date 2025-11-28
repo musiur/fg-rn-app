@@ -3,13 +3,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import {
   AlertTriangle,
+  Bell,
   Book,
   Calendar,
   Clock,
   CreditCard,
   FileText,
   MessageSquare,
-  User,
+  User
 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
@@ -75,6 +76,13 @@ export default function DashboardScreen() {
           onPress={() => router.push("/payroll")}
         />
         <QuickTile
+          icon={Bell}
+          title="Notifications"
+          caption="Updates & Alerts"
+          color="#f59e0b"
+          onPress={() => router.push("/notifications")}
+        />
+        <QuickTile
           icon={MessageSquare}
           title="ask FFL"
           caption="AI Chatbot"
@@ -103,6 +111,8 @@ export default function DashboardScreen() {
     </ScrollView>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
