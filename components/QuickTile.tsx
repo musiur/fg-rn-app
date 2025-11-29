@@ -9,6 +9,7 @@ interface QuickTileProps {
   caption: string;
   color?: string;
   onPress: () => void;
+  style?: any;
 }
 
 export const QuickTile: React.FC<QuickTileProps> = ({
@@ -17,10 +18,11 @@ export const QuickTile: React.FC<QuickTileProps> = ({
   caption,
   color,
   onPress,
+  style,
 }) => {
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={[styles.container, style]}
       onPress={onPress}
       activeOpacity={0.7}
     >

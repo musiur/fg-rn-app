@@ -1,19 +1,22 @@
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { X } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { Select } from "../components/Select";
 import { StatusPill } from "../components/StatusPill";
 import { Colors } from "../constants/Colors";
 import { EMPLOYEES } from "../constants/Data";
-import { Complaint, Employee } from "../types";
+import { Complaint, Employee, Suggestion } from "../types";
 
 export default function ComplaintsScreen() {
   const [employee, setEmployee] = useState<Employee>(EMPLOYEES[0]);
@@ -45,6 +48,18 @@ export default function ComplaintsScreen() {
     description: "",
   });
 
+  // Suggestion State
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([
+    {
+      id: "S001",
+      text: "Please add more vegetarian options in the canteen.",
+      date: "2025-08-12",
+      status: "reviewed",
+    },
+  ]);
+  const [suggestionModalVisible, setSuggestionModalVisible] = useState(false);
+  const [newSuggestion, setNewSuggestion] = useState("");
+
   useEffect(() => {
     AsyncStorage.getItem("employeeId").then((id) => {
       const emp = EMPLOYEES.find((e) => e.id === id);
@@ -73,6 +88,24 @@ export default function ComplaintsScreen() {
       description: "",
     });
     Alert.alert("Success", "Complaint submitted successfully!");
+  };
+
+  const submitSuggestion = () => {
+    if (!newSuggestion.trim()) {
+      Alert.alert("Required", "Please enter a suggestion");
+      return;
+    }
+
+    const suggestion: Suggestion = {
+      id: "S" + String(Math.floor(Math.random() * 1000)).padStart(3, "0"),
+      text: newSuggestion,
+      date: new Date().toISOString().split("T")[0],
+      status: "submitted",
+    };
+
+    setSuggestions([suggestion, ...suggestions]);
+    setNewSuggestion("");
+    Alert.alert("Success", "Suggestion submitted successfully!");
   };
 
   const getPriorityColor = (priority: string) => {
@@ -242,11 +275,70 @@ export default function ComplaintsScreen() {
           <TouchableOpacity style={styles.infoButton}>
             <Text style={styles.infoButtonText}>HR Hotline: 01711-XXXXXX</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.infoButton}>
+          <TouchableOpacity
+            style={styles.infoButton}
+            onPress={() => setSuggestionModalVisible(true)}
+          >
             <Text style={styles.infoButtonText}>Suggestion Box (Floor 3)</Text>
           </TouchableOpacity>
         </View>
       </View>
+
+      <Modal
+        visible={suggestionModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setSuggestionModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Suggestion Box</Text>
+              <TouchableOpacity
+                onPress={() => setSuggestionModalVisible(false)}
+                style={styles.closeButton}
+              >
+                <X size={24} color={Colors.slate[400]} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.suggestionForm}>
+              <Text style={styles.inputLabel}>New Suggestion</Text>
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                value={newSuggestion}
+                onChangeText={setNewSuggestion}
+                placeholder="Share your ideas for improvement..."
+                placeholderTextColor={Colors.slate[500]}
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+              />
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={submitSuggestion}
+              >
+                <Text style={styles.submitButtonText}>Submit Suggestion</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.divider} />
+
+            <Text style={styles.sectionTitle}>Recent Suggestions</Text>
+            <ScrollView style={styles.suggestionList}>
+              {suggestions.map((item) => (
+                <View key={item.id} style={styles.suggestionItem}>
+                  <View style={styles.suggestionHeader}>
+                    <Text style={styles.suggestionDate}>{item.date}</Text>
+                    <StatusPill status={item.status} />
+                  </View>
+                  <Text style={styles.suggestionText}>{item.text}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -426,5 +518,72 @@ const styles = StyleSheet.create({
     color: Colors.slate[200],
     fontSize: 13,
     fontWeight: "500",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: Colors.neutral[900],
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    height: "80%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  modalTitle: {
+    color: Colors.slate[100],
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  closeButton: {
+    padding: 4,
+  },
+  suggestionForm: {
+    marginBottom: 24,
+    gap: 16,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: Colors.neutral[800],
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    color: Colors.slate[200],
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 16,
+  },
+  suggestionList: {
+    flex: 1,
+  },
+  suggestionItem: {
+    backgroundColor: Colors.neutral[800],
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.neutral[700],
+  },
+  suggestionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  suggestionDate: {
+    color: Colors.slate[400],
+    fontSize: 12,
+  },
+  suggestionText: {
+    color: Colors.slate[200],
+    fontSize: 14,
+    lineHeight: 20,
   },
 });

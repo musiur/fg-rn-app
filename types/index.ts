@@ -169,3 +169,10 @@ export interface MovementRegister {
   approvedOn?: string;
   divisionHead?: string;
 }
+
+export interface Suggestion {
+  id: string;
+  text: string;
+  date: string;
+  status: "submitted" | "reviewed";
+}

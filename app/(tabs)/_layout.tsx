@@ -1,12 +1,12 @@
 import { Tabs, useRouter } from "expo-router";
 import {
-    Bell,
-    Book,
-    Clock,
-    FileText,
-    Home,
-    MessageSquare,
-    User
+  Bell,
+  Book,
+  Clock,
+  FileText,
+  Home,
+  MessageSquare,
+  User
 } from "lucide-react-native";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "../../constants/Colors";
@@ -109,6 +109,14 @@ export default function TabsLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color, size }) => <User size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: "Notifications",
+          href: null,
+          headerShown: false,
         }}
       />
     </Tabs>

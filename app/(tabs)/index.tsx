@@ -55,6 +55,7 @@ export default function DashboardScreen() {
           caption="SOPs & Docs"
           color={Colors.brand.light}
           onPress={() => router.push("/(tabs)/kb")}
+          style={styles.gridItem}
         />
         <QuickTile
           icon={Clock}
@@ -62,18 +63,21 @@ export default function DashboardScreen() {
           caption="Clock in/out"
           color={Colors.brand.light}
           onPress={() => router.push("/(tabs)/attendance")}
+          style={styles.gridItem}
         />
         <QuickTile
           icon={Calendar}
           title="Leave"
           caption="Apply / Balance"
           onPress={() => router.push("/leave")}
+          style={styles.gridItem}
         />
         <QuickTile
           icon={CreditCard}
           title="Payroll"
           caption="Payslips"
           onPress={() => router.push("/payroll")}
+          style={styles.gridItem}
         />
         <QuickTile
           icon={Bell}
@@ -81,18 +85,21 @@ export default function DashboardScreen() {
           caption="Updates & Alerts"
           color="#f59e0b"
           onPress={() => router.push("/notifications")}
+          style={styles.gridItem}
         />
         <QuickTile
           icon={MessageSquare}
           title="ask FFL"
           caption="AI Chatbot"
           onPress={() => router.push("/(tabs)/ai")}
+          style={styles.gridItem}
         />
         <QuickTile
           icon={FileText}
           title="E-Sign"
           caption="Sign & Approvals"
           onPress={() => router.push("/(tabs)/esign")}
+          style={styles.gridItem}
         />
         <QuickTile
           icon={AlertTriangle}
@@ -100,12 +107,14 @@ export default function DashboardScreen() {
           caption="Report Issues"
           color="#ef4444"
           onPress={() => router.push("/complaints")}
+          style={styles.gridItem}
         />
         <QuickTile
           icon={User}
           title="Profile"
           caption="Personal Info"
           onPress={() => router.push("/(tabs)/profile")}
+          style={styles.gridItem}
         />
       </View>
     </ScrollView>
@@ -170,6 +179,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 14,
+  },
+  gridItem: {
+    width: '48%',
   },
 });

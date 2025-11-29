@@ -2,17 +2,17 @@ import { useRouter } from "expo-router";
 import { Bell, BellOff, CheckCheck, ChevronRight, FileText, Megaphone, PenTool, X } from "lucide-react-native";
 import React, { useState } from "react";
 import {
-    Alert,
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { Colors } from "../constants/Colors";
-import { NOTIFICATIONS } from "../constants/Data";
-import { AppNotification } from "../types";
+import { Colors } from "../../constants/Colors";
+import { NOTIFICATIONS } from "../../constants/Data";
+import { AppNotification } from "../../types";
 
 export default function NotificationsScreen() {
   const router = useRouter();
