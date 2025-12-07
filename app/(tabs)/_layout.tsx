@@ -8,9 +8,19 @@ import {
   MessageSquare,
   User
 } from "lucide-react-native";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "../../constants/Colors";
 import { NOTIFICATIONS } from "../../constants/Data";
+
+function HeaderLogo() {
+  return (
+    <Image
+      source={require("../../assets/fakirpay.png")}
+      style={styles.logo}
+      resizeMode="contain"
+    />
+  );
+}
 
 function NotificationButton() {
   const router = useRouter();
@@ -37,6 +47,7 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
+        headerLeft: () => <HeaderLogo />,
         headerRight: () => <NotificationButton />,
         tabBarStyle: {
           backgroundColor: Colors.neutral[950],
@@ -124,6 +135,11 @@ export default function TabsLayout() {
 }
 
 const styles = StyleSheet.create({
+  logo: {
+    width: 120,
+    height: 32,
+    marginLeft: 16,
+  },
   notificationButton: {
     position: "relative",
     marginRight: 16,

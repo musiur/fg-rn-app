@@ -3,7 +3,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import {
   AlertTriangle,
-  Bell,
   Book,
   Calendar,
   Clock,
@@ -77,14 +76,6 @@ export default function DashboardScreen() {
           title="Payroll"
           caption="Payslips"
           onPress={() => router.push("/payroll")}
-          style={styles.gridItem}
-        />
-        <QuickTile
-          icon={Bell}
-          title="Notifications"
-          caption="Updates & Alerts"
-          color="#f59e0b"
-          onPress={() => router.push("/notifications")}
           style={styles.gridItem}
         />
         <QuickTile
